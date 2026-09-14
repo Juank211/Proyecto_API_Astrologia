@@ -3,6 +3,7 @@ import {
   registrarUsuario,
   iniciarSesion,
   obtenerPerfil,
+  generarLecturaGemini,
 } from "../controllers/usuario.controller.js";
 import {
   registroUsuarioValidator,
@@ -17,7 +18,8 @@ const router = Router();
 router.post("/register", registroUsuarioValidator, validarCampos, registrarUsuario);
 router.post("/login", loginUsuarioValidator, validarCampos, iniciarSesion);
 
-// Ruta protegida con JWT
+// Rutas protegidas con JWT
 router.get("/perfil", validarJWT, obtenerPerfil);
+router.post("/lectura-gemini", validarJWT, generarLecturaGemini);
 
 export default router;

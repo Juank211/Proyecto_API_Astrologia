@@ -1,6 +1,8 @@
 import bcryptjs from "bcryptjs";
 import Users from "../models/Usuario.model.js";
 import { generarJWT } from "../helpers/generarJWT.js";
+import { obtenerNumerologiaCompleta } from "../helpers/numerologia.helper.js";
+import { generarLecturaGeminiService } from "../helpers/geminiService.js";
 
 export const registrarUsuario = async (req, res) => {
   try {
@@ -61,13 +63,45 @@ export const obtenerPerfil = async (req, res) => {
   try {
     // El usuario autenticado fue inyectado por el middleware validarJWT
     const usuario = req.usuario;
+
+    // Cálculo dinámico de números de numerología central
+    const numerologia = obtenerNumerologiaCompleta(usuario);
+
     res.status(200).json({
       mensaje: "Perfil obtenido correctamente",
       usuario,
+      numerologia,
     });
   } catch (error) {
     res.status(500).json({
       mensaje: "Error al obtener perfil",
+      error: error.message,
+    });
+  }
+};
+
+export const generarLecturaGemini = async (req, res) => {
+  try {
+    const usuario = req.usuario;
+    const { signo } = req.body;
+
+    const numerologia = obtenerNumerologiaCompleta(usuario);
+
+    const lectura = await generarLecturaGeminiService({
+      nombre: usuario.nombre_completo,
+      fechaNacimiento: new Date(usuario.fecha_nacimiento).toISOString().split("T")[0],
+      signo: signo || "Solar",
+      numerologia,
+    });
+
+    res.status(200).json({
+      mensaje: "Lectura generada con éxito con IA Gemini",
+      lectura,
+      numerologia,
+    });
+  } catch (error) {
+    res.status(500).json({
+      mensaje: "Error al generar la lectura interpretativa con IA Gemini",
       error: error.message,
     });
   }

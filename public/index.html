@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AstroPortal - Astrología, Numerología & IA Gemini</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="stars-bg"></div>
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <div class="app-container">
+    <!-- Header Navbar -->
+    <header class="header">
+      <div class="brand">
+        <span class="brand-icon">🔮</span>
+        <div class="brand-text">
+          <h1>AstroPortal</h1>
+          <span class="brand-subtitle">Astrología, Numerología & IA Gemini</span>
+        </div>
+      </div>
+      <div class="user-status-badge" id="userStatusBadge">
+        <span class="badge-dot dot-offline"></span>
+        <span id="userStatusText">Invitado</span>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="main-content">
+      
+      <!-- AUTH CARD (Guest Mode) -->
+      <section class="card auth-card" id="authCard">
+        <div class="tabs-header">
+          <button type="button" class="tab-btn active" id="tabLogin" onclick="switchTab('login')">
+            <span>Iniciar Sesión</span>
+          </button>
+          <button type="button" class="tab-btn" id="tabRegister" onclick="switchTab('register')">
+            <span>Crear Cuenta</span>
+          </button>
+        </div>
+
+        <div class="tabs-body">
+          <!-- FORMULARIO DE LOGIN -->
+          <form id="formLogin" class="auth-form form-active" onsubmit="handleLogin(event)" novalidate>
+            <div class="form-header">
+              <h2>Bienvenido de Nuevo</h2>
+              <p>Ingresa tus credenciales para acceder a tu portal numerológico</p>
+            </div>
+
+            <div class="input-group">
+              <label for="loginEmail">Correo Electrónico</label>
+              <div class="input-wrapper">
+                <span class="input-icon">✉️</span>
+                <input type="email" id="loginEmail" placeholder="tu.correo@ejemplo.com" required>
+              </div>
+              <span class="error-msg" id="errorLoginEmail"></span>
+            </div>
+
+            <div class="input-group">
+              <label for="loginPassword">Contraseña</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+              </div>
+              <span class="error-msg" id="errorLoginPassword"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btnLoginSubmit">
+              <span class="btn-text">Ingresar al Portal</span>
+              <span class="spinner hidden" id="spinnerLogin"></span>
+            </button>
+          </form>
+
+          <!-- FORMULARIO DE REGISTRO -->
+          <form id="formRegister" class="auth-form hidden" onsubmit="handleRegister(event)" novalidate>
+            <div class="form-header">
+              <h2>Crear Cuenta Astral</h2>
+              <p>Completa tus datos para calcular tu carta y mapa numerológico</p>
+            </div>
+
+            <div class="input-group">
+              <label for="regNombre">Nombre Completo</label>
+              <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input type="text" id="regNombre" placeholder="Ej: Ana María Gómez" required minlength="2">
+              </div>
+              <span class="error-msg" id="errorRegNombre"></span>
+            </div>
+
+            <div class="input-group">
+              <label for="regEmail">Correo Electrónico</label>
+              <div class="input-wrapper">
+                <span class="input-icon">✉️</span>
+                <input type="email" id="regEmail" placeholder="tu.correo@ejemplo.com" required>
+              </div>
+              <span class="error-msg" id="errorRegEmail"></span>
+            </div>
+
+            <div class="input-group">
+              <label for="regPassword">Contraseña</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🔑</span>
+                <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
+              </div>
+              <span class="error-msg" id="errorRegPassword"></span>
+            </div>
+
+            <div class="input-group">
+              <label for="regFechaNac">Fecha de Nacimiento</label>
+              <div class="input-wrapper">
+                <span class="input-icon">📅</span>
+                <input type="date" id="regFechaNac" required>
+              </div>
+              <span class="error-msg" id="errorRegFechaNac"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btnRegisterSubmit">
+              <span class="btn-text">Registrar Mi Cuenta</span>
+              <span class="spinner hidden" id="spinnerRegister"></span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- PROFILE CARD (Logged In Mode) -->
+      <section class="card profile-card hidden" id="profileCard">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profileAvatar">✨</div>
+          <div class="profile-title">
+            <h2 id="profileNombre">Cargando usuario...</h2>
+            <span class="profile-email" id="profileEmail">correo@ejemplo.com</span>
+          </div>
+          <span class="status-badge-active">Cuenta Activa</span>
+        </div>
+
+        <!-- Zodiac Banner -->
+        <div class="zodiac-banner" id="zodiacBanner">
+          <div class="zodiac-icon" id="zodiacSymbol">♌</div>
+          <div class="zodiac-info">
+            <span class="zodiac-label">Tu Signo Zodiacal Solar</span>
+            <h3 class="zodiac-name" id="zodiacName">Leo</h3>
+            <p class="zodiac-desc" id="zodiacDesc">Calculado según tu fecha de nacimiento</p>
+          </div>
+        </div>
+
+        <!-- General Info Details -->
+        <div class="profile-details-grid">
+          <div class="detail-item">
+            <span class="detail-label">🎂 Fecha de Nacimiento</span>
+            <span class="detail-value" id="profileFechaNac">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">🗓️ Fecha de Registro</span>
+            <span class="detail-value" id="profileFechaReg">-</span>
+          </div>
+          <div class="detail-item full-width">
+            <span class="detail-label">🛡️ Estado de Seguridad</span>
+            <span class="detail-value text-success">Sesión Segura JWT (Vigencia 4h)</span>
+          </div>
+        </div>
+
+        <!-- NUMEROLOGY MAP SECTION -->
+        <div class="section-divider">
+          <h3>🔢 Tu Mapa de Números Centrales</h3>
+          <p>Calculado a partir de tu fecha de nacimiento y tu nombre completo</p>
+        </div>
+
+        <div class="numerology-grid">
+          <!-- Camino de Vida -->
+          <div class="num-card">
+            <div class="num-badge" id="numCaminoVida">7</div>
+            <div class="num-body">
+              <span class="num-type">Camino de Vida</span>
+              <h4 id="tituloCaminoVida">Cargando...</h4>
+              <p id="descCaminoVida">-</p>
+            </div>
+          </div>
+
+          <!-- Número de Expresión -->
+          <div class="num-card">
+            <div class="num-badge badge-cyan" id="numExpresion">3</div>
+            <div class="num-body">
+              <span class="num-type">Número de Expresión</span>
+              <h4 id="tituloExpresion">Cargando...</h4>
+              <p id="descExpresion">-</p>
+            </div>
+          </div>
+
+          <!-- Número de Alma -->
+          <div class="num-card">
+            <div class="num-badge badge-gold" id="numAlma">9</div>
+            <div class="num-body">
+              <span class="num-type">Número de Alma</span>
+              <h4 id="tituloAlma">Cargando...</h4>
+              <p id="descAlma">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- GEMINI AI READING SECTION -->
+        <div class="section-divider">
+          <h3>✨ Lectura Interpretativa con IA Gemini</h3>
+          <p>Genera una síntesis astrológica y numerológica impulsada por Google Gemini</p>
+        </div>
+
+        <div class="gemini-container">
+          <button type="button" class="btn btn-gemini" id="btnGenerarLectura" onclick="handleGenerarLectura()">
+            <span>✨ Generar Lectura Dinámica con IA</span>
+            <span class="spinner hidden" id="spinnerGemini"></span>
+          </button>
+
+          <div class="lectura-box hidden" id="lecturaGeminiBox">
+            <div class="lectura-header">
+              <span>🤖 Lectura Interpretativa de Gemini AI</span>
+              <span class="lectura-timestamp" id="lecturaTimestamp"></span>
+            </div>
+            <div class="lectura-content" id="lecturaGeminiContent">
+              Presiona el botón superior para generar tu lectura mística personalizada.
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="profile-actions">
+          <button type="button" class="btn btn-outline-danger" onclick="handleLogout()">
+            <span>🚪 Cerrar Sesión</span>
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>AstroPortal &copy; 2026 — Desarrollado con Node.js, Express, MongoDB, JWT & Google Gemini AI</p>
+    </footer>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Main JavaScript File -->
+  <script src="js/main.js"></script>
+</body>
+</html>
