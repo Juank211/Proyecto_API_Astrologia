@@ -26,7 +26,8 @@ export const validarJWT = async (req, res, next) => {
   }
 
   try {
-    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+    const secret = process.env.SECRETORPRIVATEKEY || "AstroPortal_Secret_Key_Token_2026!";
+    const { uid } = jwt.verify(token, secret);
 
     // Buscar el usuario autenticado en la base de datos
     const usuario = await Usuario.findById(uid);

@@ -333,20 +333,22 @@ function handleLogout() {
 function handleApiErrors(data, context) {
   if (data.errores && Array.isArray(data.errores)) {
     data.errores.forEach(err => {
-      const field = err.path || err.param;
+      const field = err.campo || err.path || err.param;
+      const msg = err.mensaje || err.msg;
       if (context === 'Register') {
-        if (field === 'nombre_completo') document.getElementById('errorRegNombre').textContent = err.msg;
-        if (field === 'email') document.getElementById('errorRegEmail').textContent = err.msg;
-        if (field === 'password_hash') document.getElementById('errorRegPassword').textContent = err.msg;
-        if (field === 'fecha_nacimiento') document.getElementById('errorRegFechaNac').textContent = err.msg;
+        if (field === 'nombre_completo') document.getElementById('errorRegNombre').textContent = msg;
+        if (field === 'email') document.getElementById('errorRegEmail').textContent = msg;
+        if (field === 'password_hash') document.getElementById('errorRegPassword').textContent = msg;
+        if (field === 'fecha_nacimiento') document.getElementById('errorRegFechaNac').textContent = msg;
       } else if (context === 'Login') {
-        if (field === 'email') document.getElementById('errorLoginEmail').textContent = err.msg;
-        if (field === 'password_hash') document.getElementById('errorLoginPassword').textContent = err.msg;
+        if (field === 'email') document.getElementById('errorLoginEmail').textContent = msg;
+        if (field === 'password_hash') document.getElementById('errorLoginPassword').textContent = msg;
       }
     });
     showToast('Error de Validación', 'Por favor revisa los campos señalados.', 'error');
   } else if (data.mensaje) {
-    showToast('Error', data.mensaje, 'error');
+    const errorDetails = data.error ? ` (${data.error})` : '';
+    showToast('Error', `${data.mensaje}${errorDetails}`, 'error');
   } else {
     showToast('Error', 'Ocurrió un error inesperado al procesar la solicitud.', 'error');
   }

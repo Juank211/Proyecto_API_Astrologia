@@ -13,7 +13,10 @@ export const validarCampos = (req, res, next) => {
       mensaje: "Error de validación",
       errores: errores.array().map((err) => ({
         campo: err.path,
+        path: err.path,
+        param: err.path,
         mensaje: err.msg,
+        msg: err.msg,
       })),
     });
   }

@@ -8,10 +8,11 @@ import jwt from "jsonwebtoken";
 export const generarJWT = (uid) => {
   return new Promise((resolve, reject) => {
     const payload = { uid };
+    const secret = process.env.SECRETORPRIVATEKEY || "AstroPortal_Secret_Key_Token_2026!";
 
     jwt.sign(
       payload,
-      process.env.SECRETORPRIVATEKEY,
+      secret,
       {
         expiresIn: "4h",
       },
